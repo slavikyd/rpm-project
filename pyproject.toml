@@ -9,6 +9,9 @@ readme = "README.md"
 python = "^3.10"
 fastapi = "^0.115.2"
 uvicorn = "^0.32.0"
+aiogram = "^3.13.1"
+starlette = "0.37.2"
+starlette-context = "^0.3.6"
 
 
 [tool.poetry.group.dev.dependencies]
