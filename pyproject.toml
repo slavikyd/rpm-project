@@ -12,6 +12,8 @@ uvicorn = "^0.32.0"
 aiogram = "^3.13.1"
 starlette = "0.37.2"
 starlette-context = "^0.3.6"
+pydantic = "^2.9.2"
+pydantic-settings = "^2.6.0"
 
 
 [tool.poetry.group.dev.dependencies]
