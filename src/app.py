@@ -6,7 +6,7 @@ from src.api.tg.router import router as tg_router
 from starlette_context import plugins
 from starlette_context.middleware import RawContextMiddleware
 from src.bot import BotManager
-from src.config import settings
+from config.settings import settings
 
 background_tasks = set()
 
@@ -41,5 +41,6 @@ if __name__ == '__main__':
         factory=True,
         host='0.0.0.0',
         port=5783,
-        workers=1
+        workers=1,
+        reload=True
     )
