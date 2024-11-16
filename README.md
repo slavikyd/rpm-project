@@ -39,7 +39,23 @@ git clone https://github.com/Dimmension/rag-tinkoff-sirius.git
 1. Измените конфигурацию .env (если необходимо)
 
 ## Запуск
-1. Запустите docker-compose
+1. Запустите docker compose
 ```
-docker-compose up --build
+docker compose up
 ```
+2. Запустить producer
+```
+PYTHONPATH=. python3 src/app.py
+```
+3. Запустить consumer
+```
+PYTHONPATH=. python3 consumer/__main__.py
+```
+
+## Остановка
+1. Остановить docker compose
+```
+docker compose down -v
+```
+2. Остановить producer и consumer
+Ctrl-C
