@@ -1,4 +1,5 @@
 import asyncio
+import logging
 
 from aiogram import Dispatcher, Bot
 from aiogram.fsm.storage.redis import RedisStorage
@@ -10,7 +11,10 @@ from src.storage.redis import setup_redis
 
 
 async def start_pooling():
-    dp = Dispatcher()
+    logging.error('Starting polling')
+    redis = setup_redis()
+    storage = RedisStorage(redis=redis)
+    dp = Dispatcher(storage=storage)
     setup_dp(dp)
     bot = Bot(token=settings.BOT_TOKEN)
     setup_bot(bot)
