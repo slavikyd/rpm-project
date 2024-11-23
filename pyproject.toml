@@ -16,6 +16,9 @@ hiredis = "^3.0.0"
 aio-pika = "^9.4.3"
 msgpack = "^1.1.0"
 orjson = "^3.10.12"
+transformers = "^4.46.3"
+chromadb = "^0.5.20"
+sentence-transformers = "^3.3.1"
 
 
 [build-system]
