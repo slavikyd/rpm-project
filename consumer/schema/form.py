@@ -17,3 +17,7 @@ class FormMessage(BaseMessage):
     filter_by_age: str
     filter_by_gender: str
     filter_by_description: str
+
+class RecommendMessage(BaseMessage):
+    action: str
+    user_id: int

@@ -7,7 +7,7 @@ from aiogram.fsm.context import FSMContext
 import msgpack
 
 from config.settings import settings
-from consumer.schema.form import FormMessage
+from consumer.schema.form import FormMessage, RecommendMessage
 from src.handlers.states.auth import AuthForm, AuthGroup
 from src.handlers.command.router import router
 
@@ -162,6 +162,19 @@ async def process_filter_by_description(message: Message, state: FSMContext) -> 
                     ),
                 ),
                 # TODO: correlation_id
+            ),
+            'user_messages',
+        )
+
+        await exchange.publish(
+            aio_pika.Message(
+                msgpack.packb(
+                    RecommendMessage(
+                        user_id=message.from_user.id,
+                        action='get_recommends',
+                        event='recommendations',
+                    ),
+                ),
             ),
             'user_messages',
         )
