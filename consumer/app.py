@@ -4,7 +4,7 @@ from consumer.schema.form import FormMessage
 from consumer.storage.rabbit import channel_pool
 
 
-async def main() -> None:
+async def start_consumer() -> None:
     queue_name = 'user_messages'
     async with channel_pool.acquire() as channel:
         await channel.set_qos(prefetch_count=10)

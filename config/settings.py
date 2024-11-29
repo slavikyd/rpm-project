@@ -3,6 +3,7 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     BOT_TOKEN: str
+    BOT_WEBHOOK_URL: str
 
     RABBIT_HOST: str = 'localhost'
     RABBIT_PORT: int = 5672
