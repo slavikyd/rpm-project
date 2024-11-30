@@ -1,4 +1,5 @@
 import asyncio
+
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
@@ -26,7 +27,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
 
     await bot.delete_webhook()
 
-
+    
 def create_app() -> FastAPI:
     app = FastAPI(docs_url='/swagger', lifespan=lifespan)
     app.include_router(tg_router, prefix='/tg', tags=['tg'])
