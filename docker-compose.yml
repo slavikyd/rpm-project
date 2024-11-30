@@ -23,5 +23,22 @@ services:
       retries: 30
     environment:
       POSTGRES_DB: "postgres"
-      POSTGRES_USER: "test"
-      POSTGRES_PASSWORD: "test"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+
+  producer:
+    build: 
+      dockerfile: Dockerfile
+      context: .
+    command: python3 src/app.py
+    env_file: config/.env
+    stop_signal: SIGINT
+
+  consumer:
+    build: 
+      dockerfile: Dockerfile
+      context: .
+    command: python3 consumer
+    env_file: config/.env
+    stop_signal: SIGINT
+
