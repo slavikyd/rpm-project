@@ -57,7 +57,7 @@ async def process_age(message: Message, state: FSMContext) -> None:
 
 @router.callback_query(F.data.in_({'feminine', 'masculine'}), AuthForm.gender)
 async def process_gender(callback: CallbackQuery, state: FSMContext) -> None:
-    await state.update_data(gender=callback.message)
+    await state.update_data(gender=callback.data)
     await state.set_state(AuthForm.description)
     await callback.message.answer('Введите описание о себе')
 
@@ -103,7 +103,7 @@ async def process_filter_by_age(message: Message, state: FSMContext) -> None:
 )
 async def process_filter_by_gender(callback: CallbackQuery, state: FSMContext) -> None:
     # TODO: сделать валидацию фильтра по полу
-    await state.update_data(filter_by_gender=callback.message)
+    await state.update_data(filter_by_gender=callback.data)
     await state.set_state(AuthForm.filter_by_description)
     await callback.message.answer('Укажите описание, кого вы хотите найти')
 
@@ -112,7 +112,13 @@ async def process_filter_by_gender(callback: CallbackQuery, state: FSMContext) -
 async def process_filter_by_description(message: Message, state: FSMContext) -> None:
     # TODO: валидация фильтра по описанию
     form = await state.update_data(filter_by_description=message)
-    form = {field: field_data.text for field, field_data in form.items()}
+
+    # TODO: подумать над лаконичностью
+    form = {
+        field: field_data.text
+        if isinstance(field_data, Message) else field_data
+        for field, field_data in form.items()
+    }
     form['age'] = int(form['age'])
 
     await state.set_state(AuthGroup.authorized)

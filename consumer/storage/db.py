@@ -35,8 +35,8 @@ def create_session_maker(_engine: AsyncEngine) -> async_sessionmaker[AsyncSessio
     )
 
 
-engine = create_engine()  # connect to db
-async_session = create_session_maker(engine)  # способы управления моделями внутри питона
+engine = create_engine()
+async_session = create_session_maker(engine)
 
 
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
