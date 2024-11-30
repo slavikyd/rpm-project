@@ -1,7 +1,10 @@
-import asyncio
-
-from consumer.app import main
+import uvicorn
 
 if __name__ == '__main__':
-    # TODO: запуск как отдельный сервер
-    asyncio.run(main())
+    uvicorn.run(
+        'consumer.web_app:create_app',
+        factory=True,
+        host='0.0.0.0',
+        port=8010,
+        workers=1,
+    )
