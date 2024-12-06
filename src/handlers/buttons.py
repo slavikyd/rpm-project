@@ -1,1 +1,2 @@
-# TODO: добавить константы на текстовые поля в кнопках
+SKIP_BUTTON_MSG = 'Пропустить'
+SKIP_BUTTON_CALLBACK_MSG = 'skip'

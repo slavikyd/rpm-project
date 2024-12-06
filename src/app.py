@@ -27,7 +27,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
 
     await bot.delete_webhook()
 
-    
+
 def create_app() -> FastAPI:
     app = FastAPI(docs_url='/swagger', lifespan=lifespan)
     app.include_router(tg_router, prefix='/tg', tags=['tg'])
@@ -51,7 +51,7 @@ if __name__ == '__main__':
             factory=True,
             host='0.0.0.0',
             port=8000,
-            workers=2,
+            workers=1,
         )
     else:
         asyncio.run(start_pooling())

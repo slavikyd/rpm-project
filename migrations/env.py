@@ -5,8 +5,8 @@ from sqlalchemy import pool
 
 from config.settings import settings
 
-from src.model.user import *  # noqa
-from src.model.meta import Base
+from postgres_db.model.user import *  # noqa
+from postgres_db.model.meta import Base
 
 from alembic import context
 
