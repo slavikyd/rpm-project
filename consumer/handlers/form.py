@@ -1,8 +1,8 @@
 from sqlalchemy import insert
 
-from consumer.model.user import User
+from postgres_db.model.user import User
 from consumer.schema.form import FormMessage
-from consumer.storage.db import async_session
+from postgres_db.db import async_session
 
 
 async def handle_event_form(message: FormMessage):
@@ -11,7 +11,7 @@ async def handle_event_form(message: FormMessage):
             # TODO: придумать более умную распаковку
             user_data = {
                 'id': message['user_id'],
-                'username': message['name'],
+                'username': message['username'],
                 'age': message['age'],
                 'gender': message['gender'],
                 'description': message['description'],

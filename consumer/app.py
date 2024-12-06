@@ -17,3 +17,6 @@ async def start_consumer() -> None:
                     body: FormMessage = msgpack.unpackb(message.body)
                     if body['event'] == 'user_form':
                         await handle_event_form(body)
+                    elif body['event'] == 'user_recommendations':
+                        # TODO: использовать хэндлер для выдачи рекоммендаций
+                        pass

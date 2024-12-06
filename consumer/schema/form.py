@@ -10,7 +10,7 @@ from .base import BaseMessage
 class FormMessage(BaseMessage):
     action: str
     user_id: int
-    name: str
+    username: str
     age: int
     gender: str
     description: str

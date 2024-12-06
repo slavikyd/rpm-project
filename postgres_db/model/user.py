@@ -11,7 +11,7 @@ class User(Base):
     username: Mapped[str]
     age: Mapped[int]
     gender: Mapped[str]
-    description: Mapped[str]
-    filter_by_age: Mapped[str]
+    description: Mapped[str] = mapped_column(nullable=True)
+    filter_by_age: Mapped[str] = mapped_column(nullable=True)
     filter_by_gender: Mapped[str]
-    filter_by_description: Mapped[str]
+    filter_by_description: Mapped[str] = mapped_column(nullable=True)

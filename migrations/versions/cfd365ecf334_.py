@@ -1,8 +1,8 @@
-"""initialize_tables
+"""empty message
 
-Revision ID: c8ac2914d529
+Revision ID: cfd365ecf334
 Revises: 
-Create Date: 2024-11-30 22:59:17.144062
+Create Date: 2024-12-06 10:02:14.880817
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'c8ac2914d529'
+revision: str = 'cfd365ecf334'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -25,10 +25,10 @@ def upgrade() -> None:
     sa.Column('username', sa.String(), nullable=False),
     sa.Column('age', sa.Integer(), nullable=False),
     sa.Column('gender', sa.String(), nullable=False),
-    sa.Column('description', sa.String(), nullable=False),
-    sa.Column('filter_by_age', sa.String(), nullable=False),
+    sa.Column('description', sa.String(), nullable=True),
+    sa.Column('filter_by_age', sa.String(), nullable=True),
     sa.Column('filter_by_gender', sa.String(), nullable=False),
-    sa.Column('filter_by_description', sa.String(), nullable=False),
+    sa.Column('filter_by_description', sa.String(), nullable=True),
     sa.PrimaryKeyConstraint('id', name=op.f('pk_user')),
     schema='public'
     )
