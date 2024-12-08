@@ -9,7 +9,8 @@ from src.handlers.command.router import router
 from src.utils import validators
 
 from src.utils.recommendations import init_user_queue
-
+from src.services.minio_service import upload_photo  # Import the upload function
+import uuid  # To generate unique file names
 
 @router.callback_query(F.data == '/auth', AuthGroup.no_authorized)
 async def auth(callback: CallbackQuery, state: FSMContext) -> None:
@@ -73,6 +74,24 @@ async def process_gender(callback: CallbackQuery, state: FSMContext) -> None:
         '*Введите описание о себе',
         reply_markup=markup,
     )
+
+@router.message(AuthForm.photo, content_types=['photo'])
+async def process_photo(message: Message, state: FSMContext) -> None:
+    # Save photo to MinIO
+    photo = message.photo[-1]  # Get the highest resolution photo
+    file_path = f"downloads/{photo.file_id}.jpg"
+    file_name = f"user_{uuid.uuid4()}.jpg"
+
+    await message.photo[-1].download(destination=file_path)
+
+    try:
+        await upload_photo(file_path, file_name)
+        await state.update_data(photo=file_name)
+        await state.set_state(AuthForm.description)
+        await message.answer('Фото успешно загружено. Введите описание о себе')
+    except Exception as e:
+        await message.answer(f"Ошибка загрузки фотографии: {e}")
+        return
 
 
 @router.callback_query(F.data == SKIP_BUTTON_CALLBACK_MSG, AuthForm.description)

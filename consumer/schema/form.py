@@ -14,6 +14,7 @@ class FormMessage(BaseMessage):
     age: int
     gender: str
     description: str
+    photo: str
     filter_by_age: str
     filter_by_gender: str
     filter_by_description: str
