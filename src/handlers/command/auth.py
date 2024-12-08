@@ -77,10 +77,9 @@ async def process_gender(callback: CallbackQuery, state: FSMContext) -> None:
 
 @router.message(AuthForm.photo, content_types=['photo'])
 async def process_photo(message: Message, state: FSMContext) -> None:
-    # Save photo to MinIO
-    photo = message.photo[-1]  # Get the highest resolution photo
-    file_path = f"downloads/{photo.file_id}.jpg"
-    file_name = f"user_{uuid.uuid4()}.jpg"
+    photo = message.photo[-2] 
+    file_path = f'downloads/{photo.file_id}.jpg'
+    file_name = f'user_{uuid.uuid4()}.jpg'
 
     await message.photo[-1].download(destination=file_path)
 
@@ -88,9 +87,9 @@ async def process_photo(message: Message, state: FSMContext) -> None:
         await upload_photo(file_path, file_name)
         await state.update_data(photo=file_name)
         await state.set_state(AuthForm.description)
-        await message.answer('Фото успешно загружено. Введите описание о себе')
+        await message.answer('*Загрузите фотографию для вашего профиля:')
     except Exception as e:
-        await message.answer(f"Ошибка загрузки фотографии: {e}")
+        await message.answer(f'Ошибка загрузки фотографии: {e}')
         return
 
 
