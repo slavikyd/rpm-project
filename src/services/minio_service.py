@@ -47,3 +47,22 @@ async def upload_photo(file_path, file_name):
         except Exception as e:
             print(f"Error uploading photo: {e}")
             raise
+
+
+async def get_photo(username):
+    """_summary_
+
+    Args:
+        uaername (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
+    async with get_minio_client() as client:
+        file_name = f'user_{username}.jpg'
+        try:
+            response = await client.get_object(Bucket=BUCKET_NAME, Key=file_name)
+            return response['Body']
+        except Exception as e:
+            print(f"Error retrieving photo: {e}")
+            raise

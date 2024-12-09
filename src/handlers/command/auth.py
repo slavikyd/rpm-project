@@ -79,7 +79,7 @@ async def process_gender(callback: CallbackQuery, state: FSMContext) -> None:
 async def process_photo(message: Message, state: FSMContext) -> None:
     photo = message.photo[-2] 
     file_path = f'downloads/{photo.file_id}.jpg'
-    file_name = f'user_{uuid.uuid4()}.jpg'
+    file_name = f'user_{message.from_user}.jpg'
 
     await message.photo[-1].download(destination=file_path)
 

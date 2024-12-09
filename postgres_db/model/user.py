@@ -15,3 +15,4 @@ class User(Base):
     filter_by_age: Mapped[str] = mapped_column(nullable=True)
     filter_by_gender: Mapped[str]
     filter_by_description: Mapped[str] = mapped_column(nullable=True)
+    photo_i: Mapped[str]
