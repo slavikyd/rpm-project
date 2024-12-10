@@ -1,6 +1,6 @@
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
-from aiogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
+from aiogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton, ReplyKeyboardMarkup
 
 from src.handlers.states.auth import AuthGroup
 
@@ -9,7 +9,14 @@ from .router import router
 
 @router.message(Command('start'), AuthGroup.authorized)
 async def start_cmd(message: Message, state: FSMContext) -> None:
-    await message.answer('Выберите следующие пункты')
+    # TODO: подумать над кнопкой и логикой
+    button = KeyboardButton(text='Найти знакомства!')
+    markup = ReplyKeyboardMarkup(keyboard=[[button]])
+
+    await message.answer(
+        'Выберите следующие пункты',
+        reply_markup=markup,
+    )
 
 
 @router.message(Command('start'))

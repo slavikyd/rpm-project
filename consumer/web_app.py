@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from consumer.app import start_consumer
 
 
-async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
+async def lifespan(_: FastAPI) -> AsyncGenerator[None, None]:
     task = asyncio.create_task(start_consumer())
     yield
     task.cancel()
