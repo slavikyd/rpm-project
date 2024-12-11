@@ -15,6 +15,7 @@ async def handle_event_form(message: FormMessage):
                 'age': message['age'],
                 'gender': message['gender'],
                 'description': message['description'],
+                'photo': message['photo'],
                 'filter_by_age': message['filter_by_age'],
                 'filter_by_gender': message['filter_by_gender'],
                 'filter_by_description': message['filter_by_description'],

@@ -14,3 +14,4 @@ class AuthForm(StatesGroup):
     filter_by_age = State()
     filter_by_gender = State()
     filter_by_description = State()
+    photo = State()

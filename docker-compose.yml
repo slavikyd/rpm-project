@@ -1,5 +1,5 @@
-version: '0.2'
-
+version: '0.3'
+name: 'siriusdates'
 services:
   rabbitmq:
     image: rabbitmq:3.13.7-management
@@ -14,7 +14,7 @@ services:
   
   db:
     image: postgres:16.5
-    # TODO: take variables from .env file
+    env_file: config/.env
     environment:
       POSTGRES_USER: test
       POSTGRES_PASSWORD: test
@@ -26,3 +26,40 @@ services:
       test: [ "CMD", "pg_isready", "-U", "test", "-d", "postgres" ]
       interval: 0.5s
       retries: 30
+
+  minio:
+    image: minio/minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - ./minio/data:/data
+      - ./minio/certs:/certs
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+      MINIO_ACCESS_KEY: miniotest
+      MINIO_SECRET_KEY: miniotest
+      MINIO_SCHEME: https
+      SSL_CERT_FILE: /certs/public.crt
+    command: server --console-address ":9001" /data --certs-dir /certs
+    # command: server /data
+  
+  producer:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    command: python3 src/app.py
+    env_file: config/.env
+    stop_signal: SIGINT
+
+  consumer:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    command: python3 consumer
+    env_file: config/.env
+    stop_signal: SIGINT
+
+# volumes:
+#   minio_storage: {}

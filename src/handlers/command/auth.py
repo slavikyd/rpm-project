@@ -1,6 +1,9 @@
 from aiogram import F
 from aiogram.types import Message, CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.fsm.context import FSMContext
+from io import BytesIO
+from tempfile import NamedTemporaryFile
+
 
 from src.handlers.buttons import SKIP_BUTTON_CALLBACK_MSG, SKIP_BUTTON_MSG
 from src.handlers.states.auth import AuthForm, AuthGroup
@@ -9,12 +12,34 @@ from src.handlers.command.router import router
 from src.utils import validators
 
 from src.utils.recommendations import init_user_queue
-
+from src.services.minio_service import upload_photo  
 
 @router.callback_query(F.data == '/auth', AuthGroup.no_authorized)
 async def auth(callback: CallbackQuery, state: FSMContext) -> None:
-    await state.set_state(AuthForm.name)
-    await callback.message.answer('Введите имя')
+    await state.set_state(AuthForm.photo)
+    await callback.message.answer('*Загрузите фотографию для вашего профиля:')
+
+@router.message(F.content_type == 'photo', AuthForm.photo)
+async def process_photo(message: Message, state: FSMContext) -> None:
+    photo = message.photo[-1]
+    file_name = f"user_{message.from_user.username}.jpg"
+
+    bot = message.bot
+
+    
+    try:
+        file_info = await bot.get_file(photo.file_id)
+
+        file_bytes = await bot.download_file(file_info.file_path)
+
+        await upload_photo('main', file_name, file_bytes.getvalue())
+
+        await state.update_data(photo=file_name)
+        await state.set_state(AuthForm.name)
+        await message.answer("Фото загружено. Введите имя.")
+    except Exception as e:
+        await message.answer(f"Ошибка загрузки фотографии: {e}")
+        return
 
 
 @router.message(AuthForm.name)
@@ -73,6 +98,7 @@ async def process_gender(callback: CallbackQuery, state: FSMContext) -> None:
         '*Введите описание о себе',
         reply_markup=markup,
     )
+    
 
 
 @router.callback_query(F.data == SKIP_BUTTON_CALLBACK_MSG, AuthForm.description)
@@ -140,7 +166,7 @@ async def process_filter_by_age(message: Message, state: FSMContext, isCallbackE
         inline_keyboard=[[masculine_button, feminine_button, no_preferences_button]],
     )
     await message.answer(
-        'Выберите пол того, кого вы ищете',
+        '*Выберите пол того, кого вы ищете',
         reply_markup=markup,
     )
 
@@ -160,7 +186,7 @@ async def process_filter_by_gender(callback: CallbackQuery, state: FSMContext) -
     markup = InlineKeyboardMarkup(inline_keyboard=[[skip]])
 
     await callback.message.answer(
-        '*Укажите описание, кого вы хотите найти',
+        'Укажите описание, кого вы хотите найти',
         reply_markup=markup
     )
 
