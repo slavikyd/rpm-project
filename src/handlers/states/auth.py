@@ -7,6 +7,7 @@ class AuthGroup(StatesGroup):
 
 
 class AuthForm(StatesGroup):
+    photo = State()
     name = State()
     age = State()
     gender = State()

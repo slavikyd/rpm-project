@@ -1,15 +1,14 @@
-import asyncio
 from minio import Minio
 from minio.error import S3Error
-from aiohttp import ClientSession
 from io import BytesIO
 
 # Initialize MinIO client
 minio_client = Minio(
-    "host.docker.internal:9000",  # Replace with your MinIO server URL
-    access_key="minioadmin",
-    secret_key="minioadmin",
-    secure=False # Set to False if your MinIO server doesn't use HTTPS
+    #'host.docker.internal:9000'
+    'minio:9000',  # Replace with your MinIO server URL
+    access_key='minioadmin',
+    secret_key='minioadmin',
+    secure=False  # Set to False if your MinIO server doesn't use HTTPS
 )
 
 async def upload_photo(bucket_name, object_name, photo_bytes):
@@ -29,15 +28,15 @@ async def upload_photo(bucket_name, object_name, photo_bytes):
         # Upload the photo as a stream
         print(f"Uploading {object_name} to bucket '{bucket_name}'...")
         minio_client.put_object(
-            bucket_name=bucket_name,
-            object_name=object_name,
-            data=BytesIO(photo_bytes),
-            length=len(photo_bytes),
-            content_type="image/jpeg"  # Adjust MIME type if needed
+            bucket_name = bucket_name,
+            object_name = object_name,
+            data = BytesIO(photo_bytes),
+            length = len(photo_bytes),
+            content_type = 'image/jpeg'  # Adjust MIME type if needed
         )
-        print("Upload successful!")
+        print('Upload successful!')
     except S3Error as e:
-        print(f"Error occurred: {e}")
+        print(f'Error occurred: {e}')
         return
 
 async def get_photo(bucket_name, object_name, download_path):
@@ -57,6 +56,6 @@ async def get_photo(bucket_name, object_name, download_path):
             object_name=object_name,
             file_path=download_path
         )
-        print(f"Downloaded {object_name} to {download_path}")
+        print(f'Downloaded {object_name} to {download_path}')
     except S3Error as e:
-        print(f"Error occurred: {e}")
+        print(f'Error occurred: {e}')

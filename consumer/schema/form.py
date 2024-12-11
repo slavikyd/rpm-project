@@ -6,10 +6,10 @@ from .base import BaseMessage
 # 1. Заполнить данные в первый раз
 # 2. Изменить форму ? (подумать над реализацией)
 
-# TODO: переименовать FormMessage
 class FormMessage(BaseMessage):
     action: str
     user_id: int
+    photo: str
     username: str
     age: int
     gender: str

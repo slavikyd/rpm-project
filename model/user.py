@@ -8,6 +8,7 @@ class User(Base):
     __tablename__ = 'user'
 
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
+    photo: Mapped[str]
     username: Mapped[str]
     age: Mapped[int]
     gender: Mapped[str]

@@ -19,8 +19,6 @@ class Settings(BaseSettings):
     REDIS_HOST: str
     REDIS_PORT: str
 
-    USER_RECOMMENDATIONS_QUEUE_TEMPLATE: str = 'user_recommendations.{user_id}'
-
     @property
     def rabbit_url(self) -> str:
         return f'amqp://{self.RABBIT_USER}:{self.RABBIT_PASSWORD}@{self.RABBIT_HOST}:{self.RABBIT_PORT}/'
