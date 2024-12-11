@@ -1,7 +1,7 @@
 import msgpack
 from consumer.handlers.form import handle_event_form
 from consumer.schema.form import FormMessage
-from consumer.storage.rabbit import channel_pool
+from storage.rabbit import channel_pool
 
 
 async def start_consumer() -> None:
@@ -18,5 +18,5 @@ async def start_consumer() -> None:
                     if body['event'] == 'user_form':
                         await handle_event_form(body)
                     elif body['event'] == 'user_recommendations':
-                        # TODO: использовать хэндлер для выдачи рекоммендаций
+                        # TODO: использовать хэндлер для рекоммендаций
                         pass

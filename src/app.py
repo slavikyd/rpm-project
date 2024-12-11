@@ -16,12 +16,13 @@ from src.bg_tasks import background_tasks
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
+async def lifespan(_: FastAPI) -> AsyncGenerator[None, None]:
     wh_info = await bot.get_webhook_info()
     if wh_info.url != settings.BOT_WEBHOOK_URL:
         await bot.set_webhook(settings.BOT_WEBHOOK_URL)
 
     yield
+
     while background_tasks:
         await asyncio.sleep(0)
 
