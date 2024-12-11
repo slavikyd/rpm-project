@@ -1,68 +1,62 @@
-import mimetypes
-import os
+import asyncio
+from minio import Minio
+from minio.error import S3Error
+from aiohttp import ClientSession
+from io import BytesIO
 
-from aiobotocore.session import get_session
+# Initialize MinIO client
+minio_client = Minio(
+    "host.docker.internal:9000",  # Replace with your MinIO server URL
+    access_key="minioadmin",
+    secret_key="minioadmin",
+    secure=False # Set to False if your MinIO server doesn't use HTTPS
+)
 
-MINIO_ENDPOINT = "http://localhost:9000"
-ACCESS_KEY = "admin"
-SECRET_KEY = "admin123"
-BUCKET_NAME = "photos"
-
-async def get_minio_client():
-    session = get_session()
-    return session.create_client(
-        's3',
-        endpoint_url=MINIO_ENDPOINT,
-        aws_access_key_id=ACCESS_KEY,
-        aws_secret_access_key=SECRET_KEY,
-    )
-
-
-
-ALLOWED_TYPES = {"image/jpeg", "image/png"}
-MAX_SIZE_MB = 5
-
-async def validate_file(file_path):
-    file_type = mimetypes.guess_type(file_path)[0]
-    file_size = os.path.getsize(file_path)
-
-    if file_type not in ALLOWED_TYPES:
-        raise ValueError("Invalid file type. Allowed types: JPEG, PNG")
-    if file_size > MAX_SIZE_MB * 1024 * 1024:
-        raise ValueError("File size exceeds 5MB limit.")
-
-async def upload_photo(file_path, file_name):
-    await validate_file(file_path)
-
-    async with get_minio_client() as client:
-        try:
-            with open(file_path, 'rb') as file_data:
-                await client.put_object(
-                    Bucket=BUCKET_NAME,
-                    Key=file_name,
-                    Body=file_data,
-                    ContentType=mimetypes.guess_type(file_path)[0],
-                )
-            print(f"Photo {file_name} uploaded successfully.")
-        except Exception as e:
-            print(f"Error uploading photo: {e}")
-            raise
-
-
-async def get_photo(username):
-    """_summary_
+async def upload_photo(bucket_name, object_name, photo_bytes):
+    """
+    Uploads a photo to MinIO directly from bytes received via Aiogram.
 
     Args:
-        uaername (_type_): _description_
-
-    Returns:
-        _type_: _description_
+        bucket_name (str): The name of the bucket in MinIO.
+        object_name (str): The name of the object (file) to save in the bucket.
+        photo_bytes (bytes): The photo content as bytes.
     """
-    async with get_minio_client() as client:
-        file_name = f'user_{username}.jpg'
-        try:
-            response = await client.get_object(Bucket=BUCKET_NAME, Key=file_name)
-            return response['Body']
-        except Exception as e:
-            print(f"Error retrieving photo: {e}")
-            raise
+    try:
+        # Ensure the bucket exists
+        if not minio_client.bucket_exists(bucket_name):
+            minio_client.make_bucket(bucket_name)
+
+        # Upload the photo as a stream
+        print(f"Uploading {object_name} to bucket '{bucket_name}'...")
+        minio_client.put_object(
+            bucket_name=bucket_name,
+            object_name=object_name,
+            data=BytesIO(photo_bytes),
+            length=len(photo_bytes),
+            content_type="image/jpeg"  # Adjust MIME type if needed
+        )
+        print("Upload successful!")
+    except S3Error as e:
+        print(f"Error occurred: {e}")
+        return
+
+async def get_photo(bucket_name, object_name, download_path):
+    """
+    Fetch a photo from a MinIO bucket and save it locally.
+
+    Args:
+        bucket_name (str): The name of the bucket.
+        object_name (str): The object name in MinIO (file name).
+        download_path (str): Local path to save the downloaded file.
+    """
+    try:
+        print(f"Downloading {object_name} from bucket '{bucket_name}'...")
+        # Use MinIO client to fetch the object
+        minio_client.fget_object(
+            bucket_name=bucket_name,
+            object_name=object_name,
+            file_path=download_path
+        )
+        print(f"Downloaded {object_name} to {download_path}")
+    except S3Error as e:
+        print(f"Error occurred: {e}")
