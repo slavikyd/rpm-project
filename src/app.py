@@ -1,22 +1,25 @@
 import asyncio
-
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
 import uvicorn
-
+import logging
 from fastapi import FastAPI
 from starlette_context import plugins
 from starlette_context.middleware import RawContextMiddleware
 
 from config.settings import settings
 from src.api.tg.router import router as tg_router
-from src.bot import dp, bot
 from src.bg_tasks import background_tasks
+from src.bot import bot, dp
+from src.logger import LOGGING_CONFIG, logger
+
 
 
 @asynccontextmanager
 async def lifespan(_: FastAPI) -> AsyncGenerator[None, None]:
+    logging.config.dictConfig(LOGGING_CONFIG)
+    logger.info('Starting app lifespan')
     wh_info = await bot.get_webhook_info()
     if wh_info.url != settings.BOT_WEBHOOK_URL:
         await bot.set_webhook(settings.BOT_WEBHOOK_URL)
@@ -27,6 +30,7 @@ async def lifespan(_: FastAPI) -> AsyncGenerator[None, None]:
         await asyncio.sleep(0)
 
     await bot.delete_webhook()
+    logger.info('Ending app lifespan')
 
 
 def create_app() -> FastAPI:
